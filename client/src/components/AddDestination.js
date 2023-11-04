@@ -90,8 +90,10 @@ const AddDestination = () => {
       .then((response) => {
         console.log('Destination ajoutée avec succès:', response.data);
 
-    setSuccessMessage('La destination a été ajoutée avec succès!');
-    navigate('/', { state: { successMessage: 'La destination a été ajoutée avec succès!' } });
+    setSuccessMessage('The destination has been successfully added!');
+    localStorage.setItem('successMessage', 'The destination has been successfully added!!');
+
+    navigate('/');
 
         setDestinationData({
           name: '',

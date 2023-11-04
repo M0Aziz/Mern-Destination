@@ -9,8 +9,16 @@ const DisplayAll = () => {
     const location = useLocation();
 
   const [destinations, setDestinations] = useState([]);
+  const [successMessageFromStorage, setSuccessMessageFromStorage] = useState('');
 
   useEffect(() => {
+
+    const successMessage = localStorage.getItem('successMessage');
+    if (successMessage) {
+      setSuccessMessageFromStorage(successMessage);
+      localStorage.removeItem('successMessage');
+    }
+
     axios.get('http://localhost:8000/api/destination')
       .then((response) => {
         setDestinations(response.data);
@@ -23,13 +31,13 @@ const DisplayAll = () => {
 
 
   const handleDelete = (id) => {
-    const confirmDelete = window.confirm("Êtes-vous sûr de vouloir supprimer cette destination ?");
+    const confirmDelete = window.confirm("Are you sure you want to delete this destination?");
 
     if (confirmDelete) {
       axios
         .delete(`http://localhost:8000/api/destination/`, { data: { id } })
         .then((response) => {
-          console.log('Destination supprimée avec succès:', response.data);
+          console.log('Destination Deleted:', response.data);
 
           axios.get('http://localhost:8000/api/destination')
             .then((response) => {
@@ -40,7 +48,7 @@ const DisplayAll = () => {
             });
         })
         .catch((error) => {
-          console.error("Erreur lors de la suppression de la destination:", error);
+          console.error("Erreur deleting:", error);
         });
     }
   };
@@ -50,16 +58,15 @@ const DisplayAll = () => {
 
 
 
-  const successMessage = location.state && location.state.successMessage;
+
 
   return (
     <div className="container">
-    {successMessage && (
-        <div className="alert alert-success alert-dismissible">
-        {successMessage}
+    {successMessageFromStorage && (
+      <div className="alert alert-success alert-dismissible">
+        {successMessageFromStorage}
         <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-      
       )}
       <h1 className='mt-5'>Don't know where to travel? We got you</h1>
       <Link to="/add" className="btn btn-primary mt-3">Add Destination</Link>
